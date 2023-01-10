@@ -18,12 +18,11 @@ static void led_task_func(void *argp) {
     s_led *ledp = (s_led*)argp;
     unsigned stack_hwm = 0, temp;
 
-    delay(3000);
 
-    int i;
-    for (i=0;i<46;++i) {
+    for (; ;) {
         digitalWrite(ledp->gpio,ledp->state ^= 1);
         temp = uxTaskGetStackHighWaterMark(nullptr);
+
         if ( !stack_hwm || temp < stack_hwm ) {
             stack_hwm = temp;
             printf("Task for gpio %d has stack hwm %u\n", ledp->gpio,stack_hwm);
@@ -39,8 +38,8 @@ void setup() {
 
     app_cpu = xPortGetCoreID();
     printf("app_cpu is %d (%s core)\n",
-    app_cpu,
-    app_cpu > 0 ? "Dual" : "Single");
+        app_cpu,
+        app_cpu > 0 ? "Dual" : "Single");
 
     printf("LEDs on gpios: ");
     for ( auto& led : leds ) {
@@ -61,7 +60,22 @@ void setup() {
 }
 
 void loop() {
-  delay(1000);
+  delay(1000); // delay zodat er tijd tussen het opnieuw runnen zit
+
+  if (count == 10) {
+    prinf("Pauze for 3 seconden!");
+
+    int i;
+    for (i=0; i!=3; i++) {
+      vTaskSuspend(leds[i].taskh); // pauzeer iedere led taak (totaal 3)
+    }
+
+    delay(3000); // 3 sec. delay
+
+    for (i=0; i!=3; i++) { // opnieuw starten van de taken
+      vTaskResume(leds[i].taskh);
+    }
+
+    count = 0;
+  }
 }
-
-
