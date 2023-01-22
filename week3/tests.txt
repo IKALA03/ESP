@@ -1,0 +1,7 @@
+Deze code is een oplossing voor het probleem van de eten filosofen. 
+Het gebruikt semaphores om te voorkomen dat er een deadlock ontstaat. 
+
+- Er zijn 4 filosofen en elk van hen heeft twee vorken nodig om te eten. De filosofen denken, worden hongerig en eten vervolgens. 
+- Elk filosoof taak wordt voortdurend uitgevoerd. Er is een semaphore voor elke vork en een semaphore om te voorkomen dat er een deadlock ontstaat. 
+- Er is ook een wachtrij waar filosofen hun status (denken, hongerig, eten) kunnen verzenden. 
+- Er is een vertraging tussen elke stap in de taak om de uitvoering te simuleren.
